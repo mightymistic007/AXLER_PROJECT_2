@@ -1,0 +1,5 @@
+pyiceberg[pyarrow,s3fs]>=0.6.0
+duckdb>=0.10.0
+kafka-python-ng
+pyarrow
+minio
