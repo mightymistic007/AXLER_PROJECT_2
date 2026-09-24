@@ -1,13 +1,11 @@
-version: '3.8'
-
 networks:
   icestream-net:
     driver: bridge
 
 services:
-  # Redpanda: Lightweight, high-throughput Kafka broker
+  # Redpanda: Drop-in Apache Kafka compatible broker
   redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:latest
+    image: redpandadata/redpanda:latest
     container_name: icestream-redpanda
     command:
       - redpanda start
@@ -24,9 +22,9 @@ services:
     networks:
       - icestream-net
 
-  # MinIO: Local S3-compatible Object Storage for Iceberg Lakehouse
+  # MinIO: S3-compatible Lakehouse Storage Engine
   minio:
-    image: minio/minio:latest
+    image: quay.io/minio/minio:latest
     container_name: icestream-minio
     environment:
       MINIO_ROOT_USER: admin
