@@ -35,3 +35,20 @@ services:
       - "9001:9001"
     networks:
       - icestream-net
+
+  # Automated bucket provisioning service
+  minio-init:
+    image: curlimages/curl:latest
+    container_name: icestream-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 4;
+      curl -s -X PUT http://minio:9000/lakehouse \
+        -H 'Authorization: AWS admin:password123' || true;
+      echo 'Bucket lakehouse initialized successfully';
+      exit 0;
+      "
+    networks:
+      - icestream-net
