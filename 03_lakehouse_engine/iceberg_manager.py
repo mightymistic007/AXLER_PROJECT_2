@@ -15,6 +15,7 @@ S3_ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
 S3_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "admin")
 S3_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "password123")
 TABLE_IDENTIFIER = os.getenv("ICEBERG_TABLE", "lakehouse.orders")
+S3_TABLE_LOCATION = os.getenv("ICEBERG_LOCATION", "s3://lakehouse/orders")
 
 # Define strongly-typed Apache Iceberg transaction schema
 iceberg_schema = Schema(
@@ -46,7 +47,33 @@ def init_catalog() -> SqlCatalog:
     print(f"✓ Initialized Iceberg catalog '{CATALOG_NAME}' connected to {S3_ENDPOINT}")
     return catalog
 
+def get_or_create_table(catalog: SqlCatalog):
+    """
+    Idempotently verifies or provisions the namespace and orders table in MinIO.
+    """
+    # 1. Ensure namespace exists
+    namespace = TABLE_IDENTIFIER.split(".")[0]
+    try:
+        catalog.create_namespace(namespace)
+        print(f"✓ Created catalog namespace '{namespace}'")
+    except Exception:
+        pass
+
+    # 2. Load existing table or create new table with defined schema and S3 location
+    try:
+        table = catalog.load_table(TABLE_IDENTIFIER)
+        print(f"✓ Connected to existing Iceberg table: {TABLE_IDENTIFIER}")
+        return table
+    except Exception:
+        table = catalog.create_table(
+            identifier=TABLE_IDENTIFIER,
+            schema=iceberg_schema,
+            location=S3_TABLE_LOCATION
+        )
+        print(f"✓ Initialized new Iceberg table '{TABLE_IDENTIFIER}' at {S3_TABLE_LOCATION}")
+        return table
+
 if __name__ == "__main__":
     cat = init_catalog()
-    print("✓ Configured schema fields:", [field.name for field in iceberg_schema.fields])
-    
+    table = get_or_create_table(cat)
+    print("✓ Active table location:", table.location())
