@@ -8,7 +8,7 @@ from pyiceberg.types import (
     NestedField
 )
 
-# Load configurations with fallback defaults
+# Configuration with fallback defaults
 CATALOG_NAME = os.getenv("ICEBERG_CATALOG_NAME", "lakehouse_catalog")
 CATALOG_URI = os.getenv("ICEBERG_CATALOG_URI", "sqlite:////tmp/iceberg_catalog.db")
 S3_ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
@@ -17,7 +17,7 @@ S3_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "password123")
 TABLE_IDENTIFIER = os.getenv("ICEBERG_TABLE", "lakehouse.orders")
 S3_TABLE_LOCATION = os.getenv("ICEBERG_LOCATION", "s3://lakehouse/orders")
 
-# Define strongly-typed Apache Iceberg transaction schema
+# Strongly-typed Iceberg transaction schema
 iceberg_schema = Schema(
     NestedField(field_id=1, name="transaction_id", field_type=StringType(), required=True),
     NestedField(field_id=2, name="customer_id", field_type=StringType(), required=True),
@@ -30,10 +30,7 @@ iceberg_schema = Schema(
 )
 
 def init_catalog() -> SqlCatalog:
-    """
-    Initializes and returns an Apache Iceberg SqlCatalog backed by SQLite
-    and configured for MinIO S3 object storage.
-    """
+    """Initializes and returns an Apache Iceberg SqlCatalog connected to MinIO S3."""
     catalog = SqlCatalog(
         CATALOG_NAME,
         **{
@@ -48,18 +45,14 @@ def init_catalog() -> SqlCatalog:
     return catalog
 
 def get_or_create_table(catalog: SqlCatalog):
-    """
-    Idempotently verifies or provisions the namespace and orders table in MinIO.
-    """
-    # 1. Ensure namespace exists
+    """Idempotently loads or creates the orders table in the lakehouse namespace."""
     namespace = TABLE_IDENTIFIER.split(".")[0]
     try:
         catalog.create_namespace(namespace)
-        print(f"✓ Created catalog namespace '{namespace}'")
+        print(f"✓ Namespace '{namespace}' verified/created")
     except Exception:
         pass
 
-    # 2. Load existing table or create new table with defined schema and S3 location
     try:
         table = catalog.load_table(TABLE_IDENTIFIER)
         print(f"✓ Connected to existing Iceberg table: {TABLE_IDENTIFIER}")
@@ -70,7 +63,7 @@ def get_or_create_table(catalog: SqlCatalog):
             schema=iceberg_schema,
             location=S3_TABLE_LOCATION
         )
-        print(f"✓ Initialized new Iceberg table '{TABLE_IDENTIFIER}' at {S3_TABLE_LOCATION}")
+        print(f"✓ Provisioned new Iceberg table '{TABLE_IDENTIFIER}' at {S3_TABLE_LOCATION}")
         return table
 
 if __name__ == "__main__":
