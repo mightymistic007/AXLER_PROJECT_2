@@ -1,4 +1,6 @@
 import os
+from typing import List, Dict, Any
+import pyarrow as pa
 from pyiceberg.catalog.sql import SqlCatalog
 from pyiceberg.schema import Schema
 from pyiceberg.types import (
@@ -28,6 +30,18 @@ iceberg_schema = Schema(
     NestedField(field_id=7, name="payment_status", field_type=StringType(), required=True),
     NestedField(field_id=8, name="timestamp", field_type=StringType(), required=True)
 )
+
+# PyArrow Schema matching Iceberg field specifications
+arrow_schema = pa.schema([
+    ("transaction_id", pa.string()),
+    ("customer_id", pa.string()),
+    ("item_count", pa.int64()),
+    ("subtotal_usd", pa.float32()),
+    ("tax_amount", pa.float32()),
+    ("total_usd", pa.float32()),
+    ("payment_status", pa.string()),
+    ("timestamp", pa.string())
+])
 
 def init_catalog() -> SqlCatalog:
     """Initializes and returns an Apache Iceberg SqlCatalog connected to MinIO S3."""
@@ -66,7 +80,42 @@ def get_or_create_table(catalog: SqlCatalog):
         print(f"✓ Provisioned new Iceberg table '{TABLE_IDENTIFIER}' at {S3_TABLE_LOCATION}")
         return table
 
+def records_to_arrow_table(records: List[Dict[str, Any]]) -> pa.Table:
+    """
+    Transforms a batch of streaming JSON transaction dictionaries into
+    a strictly-typed PyArrow Table matching the Iceberg table layout.
+    """
+    if not records:
+        return pa.Table.from_batches([], schema=arrow_schema)
+
+    formatted_data = {
+        "transaction_id": [str(r.get("transaction_id", "")) for r in records],
+        "customer_id": [str(r.get("customer_id", "")) for r in records],
+        "item_count": [int(r.get("item_count", 0)) for r in records],
+        "subtotal_usd": [float(r.get("subtotal_usd", 0.0)) for r in records],
+        "tax_amount": [float(r.get("tax_amount", 0.0)) for r in records],
+        "total_usd": [float(r.get("total_usd", 0.0)) for r in records],
+        "payment_status": [str(r.get("payment_status", "UNKNOWN")) for r in records],
+        "timestamp": [str(r.get("timestamp", "")) for r in records]
+    }
+    return pa.Table.from_pydict(formatted_data, schema=arrow_schema)
+
 if __name__ == "__main__":
     cat = init_catalog()
     table = get_or_create_table(cat)
     print("✓ Active table location:", table.location())
+    
+    # Test batch conversion
+    test_batch = [{
+        "transaction_id": "tx_test_01",
+        "customer_id": "cust_100",
+        "item_count": 2,
+        "subtotal_usd": 50.0,
+        "tax_amount": 4.0,
+        "total_usd": 54.0,
+        "payment_status": "SUCCESS",
+        "timestamp": "2026-09-28T10:00:00Z"
+    }]
+    arrow_tbl = records_to_arrow_table(test_batch)
+    print(f"✓ PyArrow conversion validated: {arrow_tbl.num_rows} row(s) mapped.")
+    
