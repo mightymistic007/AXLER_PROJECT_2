@@ -34,3 +34,15 @@ button:focus-visible { outline: 3px solid rgba(12, 131, 116, .25); outline-offse
 .secondary-button { min-height: 34px; border: 1px solid var(--line-strong); border-radius: 9px; padding: 0 13px; background: white; cursor: pointer; font-size: 11px; font-weight: 700; }
 .secondary-button:hover { border-color: #9db3ae; background: #f8fbfa; }
 .secondary-button:disabled, button:disabled { cursor: wait; opacity: .58; }
+
+.metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 15px; }
+.metric-card, .panel { border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+.metric-card { min-width: 0; border-radius: 13px; padding: 15px 16px 13px; }
+.metric-top { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.metric-top i { width: 7px; height: 7px; border-radius: 50%; background: #8eb4ad; box-shadow: 0 0 0 4px #edf4f2; }
+.metric-card>strong { display: block; margin-top: 12px; color: var(--navy); font: 720 clamp(23px, 2.5vw, 31px) var(--font-mono); letter-spacing: -.055em; }
+.metric-foot { display: flex; min-height: 25px; align-items: flex-end; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.metric-foot small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+.micro-bars { display: flex; width: 55px; height: 24px; align-items: end; gap: 2px; }
+.micro-bars span { flex: 1; max-height: 100%; border-radius: 2px 2px 0 0; background: #8dcabd; }
+.tone-good .metric-top i { background: #159f73; }.tone-danger .metric-top i { background: var(--coral); box-shadow: 0 0 0 4px #fbe7e2; }.tone-danger .micro-bars span { background: #e89987; }
