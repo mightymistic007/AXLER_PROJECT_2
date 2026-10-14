@@ -62,3 +62,7 @@ button:focus-visible { outline: 3px solid rgba(12, 131, 116, .25); outline-offse
 .icon-rules { border-radius: 2px; }.icon-rules::after { position: absolute; content: ''; left: 3px; top: 3px; width: 6px; height: 1.5px; background: #829493; box-shadow: 0 3px #829493, 0 6px #829493; }
 .sidebar-foot { margin-top: auto; border: 1px solid var(--line); border-radius: 11px; padding: 13px 11px; background: white; }
 .sidebar-foot p { margin: 0 0 8px; }.sidebar-foot strong { display: block; font-size: 11px; }.sidebar-foot span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+
+.flow-canvas { width: 100%; height: 255px; border-top: 1px solid #edf1f0; border-bottom: 1px solid #edf1f0; background: #f9fbfa; }
+.react-flow__handle { width: 5px !important; height: 5px !important; border: 0 !important; background: #76938e !important; }
+.react-flow__controls { overflow: hidden; border: 1px solid var(--line) !important; border-radius: 7px !important; box-shadow: none !important; }.react-flow__controls-button { width: 22px !important; height: 22px !important; border-color: var(--line) !important; }
