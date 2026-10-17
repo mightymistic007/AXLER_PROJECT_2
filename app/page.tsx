@@ -92,6 +92,16 @@ export default function Home() {
                 <span><i className="legend-bad" />Circuit blocked</span>
               </div>
             </article>
+
+            <aside className="panel fault-panel">
+              <div className="panel-head"><div><p className="eyebrow">CONTROLLED TEST</p><h2>Fault injection</h2></div></div>
+              <p className="panel-copy">Introduce deterministic bad records and watch the quality gate isolate them.</p>
+              <div className="fault-list">
+                <button onClick={() => alert('Injecting null tax')} type="button"><span>NULL</span><div><strong>Null tax burst</strong><small>Break DQ-001</small></div><b>Inject</b></button>
+                <button onClick={() => alert('Injecting schema drift')} type="button"><span>V2</span><div><strong>Schema drift</strong><small>Break DQ-003</small></div><b>Inject</b></button>
+                <button onClick={() => alert('Injecting amount spike')} type="button"><span>₹↑</span><div><strong>Amount spike</strong><small>Break DQ-005</small></div><b>Inject</b></button>
+              </div>
+            </aside>
           </div>
         </section>
       </div>

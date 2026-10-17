@@ -92,3 +92,10 @@ button:focus-visible { outline: 3px solid rgba(12, 131, 116, .25); outline-offse
 .panel-head h2, .rule-card h2, .snapshot-inspector h2 { margin: 0; color: var(--navy); font-size: 16px; letter-spacing: -.035em; }
 .panel-head .eyebrow { margin-bottom: 4px; }
 .stream-label { border-radius: 6px; padding: 6px 8px; color: #4f690c; background: #eff8d2; font: 700 8px var(--font-mono); letter-spacing: .08em; }
+
+.fault-panel { padding-bottom: 14px; }.fault-panel .panel-head { padding-bottom: 4px; }.panel-copy { margin: 5px 17px 12px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.fault-list { display: grid; gap: 7px; padding: 0 12px; }
+.fault-list button { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 8px; min-height: 47px; border: 1px solid var(--line); border-radius: 9px; padding: 7px; background: #fbfcfb; cursor: pointer; text-align: left; }
+.fault-list button:hover { border-color: #aac1bc; background: #f5faf8; }
+.fault-list button>span { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 7px; color: #49645e; background: #e9f1ee; font: 750 8px var(--font-mono); }
+.fault-list button div { display: grid; gap: 2px; }.fault-list strong { font-size: 9px; }.fault-list small { color: var(--muted); font-size: 8px; }.fault-list button>b { color: var(--teal); font-size: 8px; }
