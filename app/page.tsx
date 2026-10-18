@@ -101,6 +101,10 @@ export default function Home() {
                 <button onClick={() => alert('Injecting schema drift')} type="button"><span>V2</span><div><strong>Schema drift</strong><small>Break DQ-003</small></div><b>Inject</b></button>
                 <button onClick={() => alert('Injecting amount spike')} type="button"><span>₹↑</span><div><strong>Amount spike</strong><small>Break DQ-005</small></div><b>Inject</b></button>
               </div>
+              <div className="breaker-box">
+                <div><span className="breaker-light" /><p><small>CIRCUIT BREAKER</small><strong>closed</strong></p></div>
+                <button type="button" onClick={() => alert('Resetting circuit breaker')}>Reset</button>
+              </div>
             </aside>
           </div>
         </section>
