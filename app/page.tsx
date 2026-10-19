@@ -107,6 +107,21 @@ export default function Home() {
               </div>
             </aside>
           </div>
+
+          <div className="lower-grid">
+            <article className="panel incidents-panel">
+              <div className="panel-head"><div><p className="eyebrow">OPERATIONS</p><h2>Recent incidents</h2></div><button className="text-button" onClick={() => setActiveTab('incidents')}>View all →</button></div>
+              <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Status</th><th>Rule</th><th>Incident</th><th>Opened</th></tr></thead>
+                  <tbody>
+                    <tr><td><span className="incident-status status-open">open</span></td><td><code>DQ-001</code></td><td><strong>Tax is present</strong><small>Calculated tax field was null or empty</small></td><td>14:22:10</td></tr>
+                    <tr><td><span className="incident-status status-resolved">resolved</span></td><td><code>DQ-003</code></td><td><strong>Schema is governed</strong><small>V2 schema drift blocked from serving</small></td><td>14:18:04</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
         </section>
       </div>
     </main>
