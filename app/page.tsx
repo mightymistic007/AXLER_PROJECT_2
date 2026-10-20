@@ -121,6 +121,14 @@ export default function Home() {
                 </table>
               </div>
             </article>
+
+            <article className="panel snapshot-panel">
+              <div className="panel-head"><div><p className="eyebrow">TIME TRAVEL</p><h2>Lakehouse snapshots</h2></div><button className="text-button" onClick={() => setActiveTab('snapshots')}>Explore →</button></div>
+              <div className="snapshot-list">
+                <button type="button"><span>#1</span><div><strong>24 events</strong><small>14:15:00 · immutable</small></div><b>Inspect →</b></button>
+                <button type="button"><span>#2</span><div><strong>48 events</strong><small>14:20:00 · immutable</small></div><b>Inspect →</b></button>
+              </div>
+            </article>
           </div>
         </section>
       </div>
