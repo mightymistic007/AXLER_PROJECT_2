@@ -146,3 +146,5 @@ button:focus-visible { outline: 3px solid rgba(12, 131, 116, .25); outline-offse
 .auth-note { display: flex; align-items: center; gap: 8px; margin-top: 19px; color: var(--muted); font-size: 8px; line-height: 1.45; }.auth-note i { flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%; background: #16a378; box-shadow: 0 0 0 4px #e0f6ed; }.auth-note code { color: #486a65; font: 700 8px var(--font-mono); }
 .auth-loading { display: flex; min-height: 160px; align-items: center; justify-content: center; gap: 12px; color: var(--muted); font-size: 10px; }.auth-loading i { width: 18px; height: 18px; border: 2px solid #d7e5e1; border-top-color: var(--teal); border-radius: 50%; animation: auth-spin .8s linear infinite; }
 @keyframes auth-spin { to { transform: rotate(360deg); } }
+
+.toast { position: fixed; z-index: 50; right: 24px; bottom: 22px; max-width: 390px; border: 1px solid #bdd4ce; border-radius: 10px; padding: 11px 14px; color: #24423e; background: rgba(247,253,250,.98); box-shadow: 0 14px 34px rgba(9,52,45,.17); font-size: 10px; }
