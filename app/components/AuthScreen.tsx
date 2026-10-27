@@ -65,8 +65,8 @@ export function AuthScreen({
 }) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [displayName, setDisplayName] = useState('');
-  const [username, setUsername] = useState('axlero.operator');
-  const [userId, setUserId] = useState('AXL-IS-001');
+  const [username, setUsername] = useState('Abhishek001');
+  const [userId, setUserId] = useState('Abhishek001');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -95,8 +95,8 @@ export function AuthScreen({
       setUserId('');
     } else {
       const savedIdentity = readSavedIdentity();
-      setUsername(savedIdentity?.username ?? 'axlero.operator');
-      setUserId(savedIdentity?.user_id ?? 'AXL-IS-001');
+      setUsername(savedIdentity?.username ?? 'Abhishek001');
+      setUserId(savedIdentity?.user_id ?? 'Abhishek001');
       setSavePassword(Boolean(savedIdentity));
     }
   };
