@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IceStream - Reviewer Presentation & Viva Guide</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 15mm 18mm 15mm;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #102529;
+    line-height: 1.5;
+    font-size: 11pt;
+    margin: 0;
+    padding: 0;
+  }
+  .header-box {
+    border-bottom: 2px solid #0c8374;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .title {
+    font-size: 22pt;
+    font-weight: 800;
+    color: #071d28;
+    margin: 0;
+    letter-spacing: -0.03em;
+  }
+  .subtitle {
+    font-size: 11pt;
+    color: #0c8374;
+    font-weight: 700;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .badge {
+    background: #e7f2ed;
+    color: #086456;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 9pt;
+    font-weight: 700;
+    border: 1px solid #cbd8d5;
+  }
+  .section {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+  }
+  h2 {
+    font-size: 13pt;
+    color: #071d28;
+    border-left: 4px solid #0c8374;
+    padding-left: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  p {
+    margin: 0 0 8px 0;
+  }
+  .step-card {
+    background: #fbfcfb;
+    border: 1px solid #dce5e3;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+  }
+  .step-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 11pt;
+    color: #086456;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-number {
+    display: inline-grid;
+    width: 22px;
+    height: 22px;
+    place-items: center;
+    background: #0c8374;
+    color: white;
+    border-radius: 50%;
+    font-size: 8.5pt;
+    font-weight: 800;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 9.5pt;
+  }
+  th, td {
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid #dce5e3;
+  }
+  th {
+    background: #f0f5f2;
+    color: #071d28;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background: #fbfcfb;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 700;
+    font-family: monospace;
+  }
+  .tag-crit { background: #fce7e2; color: #b2432e; }
+  .tag-warn { background: #fdf5df; color: #8a640b; }
+  .tag-pass { background: #e4f3ed; color: #177159; }
+  .diagram {
+    background: #071d28;
+    color: #c8f451;
+    font-family: monospace;
+    font-size: 9pt;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    line-height: 1.4;
+  }
+  .highlight-box {
+    background: #f4fbf7;
+    border-left: 4px solid #16a378;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 10pt;
+  }
+  .qa-card {
+    background: #ffffff;
+    border: 1px solid #dce5e3;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .qa-q {
+    font-weight: 700;
+    color: #071d28;
+    font-size: 10pt;
+    margin-bottom: 4px;
+  }
+  .qa-a {
+    color: #3b4e51;
+    font-size: 9.5pt;
+    line-height: 1.45;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+  <div>
+    <div class="subtitle">Axlero Solutions • Project 2</div>
+    <h1 class="title">IceStream Observability</h1>
+  </div>
+  <div class="badge">Viva & Reviewer Guide</div>
+</div>
+
+<div class="section">
+  <h2>1. Executive Summary (60-Second Pitch)</h2>
+  <div class="highlight-box">
+    <strong>Elevator Pitch:</strong> IceStream is a real-time data-quality control plane for streaming checkout telemetry. Every transaction is governed and validated against strict quality contracts before entering the serving table. If the rolling critical error rate exceeds <strong>2%</strong>, an automated circuit breaker trips, isolates bad records to a Dead Letter Queue (DLQ), triggers live WebSocket alerts, and creates an auditable incident. Once clean batches arrive, it automatically recovers. Point-in-time immutable snapshots allow operators to perform time-travel audits.
+  </div>
+</div>
+
+<div class="section">
+  <h2>2. Pipeline Architecture & Data Flow</h2>
+  <div class="diagram">
+[Checkout Telemetry] ──> [Stateful Processor] ──> [Quality Assertion Gate]
+                                                             │
+                  ┌──────────────────────────────────────────┴──────────────────────────────────────────┐
+                  ▼                                                                                     ▼
+     Clean Events (Critical Errors &le; 2%)                                               Fault Detected / Breaker Tripped (&gt; 2%)
+[Iceberg Serving Table &amp; Snapshots]                                                [Quarantined DLQ + Incident Management]
+  </div>
+  <p><strong>Step-by-Step Flow:</strong></p>
+  <div class="step-card">
+    <h3><span class="step-number">1</span> Ingress &amp; Stateful Stream Validation</h3>
+    <p>Incoming order events arrive with subtotal, tax, region, currency, and schema version. The engine evaluates each record against 6 governed assertions in memory.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">2</span> Rolling 2% Circuit Breaker Protection</h3>
+    <p>The control plane monitors a sliding 100-event window. If critical quality failures cross 2% (<code>error_rate &gt; 0.02</code>), the circuit trips from <em>closed</em> to <em>open</em>.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">3</span> Dual-Route Isolation (Serving vs. DLQ)</h3>
+    <p>Clean records commit to the lakehouse storage sink. Quarantined records route to SQLite Dead-Letter Storage with exact failure reasons—bad data never infects downstream analytics.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">4</span> Automatic 5-Batch Hysteresis Recovery</h3>
+    <p>To avoid flapping, recovery requires 5 consecutive clean probe batches. Once verified, the circuit closes automatically, or an operator can trigger a manual reset.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">5</span> Lakehouse Snapshots &amp; Time-Travel</h3>
+    <p>Every 24 accepted events commit an immutable snapshot watermark. Operators can inspect point-in-time historical tables to audit historical state.</p>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section">
+  <h2>3. Governed Data Quality Rules Catalogue</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rule ID</th>
+        <th>Rule Name</th>
+        <th>Field</th>
+        <th>Severity</th>
+        <th>Quality Contract / Assertion Logic</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>DQ-001</strong></td>
+        <td>Tax is present</td>
+        <td><code>tax_amount</code></td>
+        <td><span class="tag tag-crit">CRITICAL</span></td>
+        <td>Checkout events must contain a valid, non-null tax amount.</td>
+      </tr>
+      <tr>
+        <td><strong>DQ-002</strong></td>
+        <td>Tax is plausible</td>
+        <td><code>tax_amount</code></td>
+        <td><span class="tag tag-crit">CRITICAL</span></td>
+        <td>Tax must be non-negative and &le; 35% of subtotal.</td>
+      </tr>
+      <tr>
+        <td><strong>DQ-003</strong></td>
+        <td>Schema is governed</td>
+        <td><code>schema_version</code></td>
+        <td><span class="tag tag-crit">CRITICAL</span></td>
+        <td>Only approved <code>checkout.v1</code> schema may enter serving.</td>
+      </tr>
+      <tr>
+        <td><strong>DQ-004</strong></td>
+        <td>Currency is supported</td>
+        <td><code>currency</code></td>
+        <td><span class="tag tag-warn">WARNING</span></td>
+        <td>Currency must match supported settlement codes (USD, EUR, INR, GBP).</td>
+      </tr>
+      <tr>
+        <td><strong>DQ-005</strong></td>
+        <td>Subtotal bounded</td>
+        <td><code>subtotal</code></td>
+        <td><span class="tag tag-crit">CRITICAL</span></td>
+        <td>Subtotal must remain inside operational threshold (&le; $50,000).</td>
+      </tr>
+      <tr>
+        <td><strong>DQ-006</strong></td>
+        <td>Region is known</td>
+        <td><code>region</code></td>
+        <td><span class="tag tag-warn">WARNING</span></td>
+        <td>Region must map to recognized geographic sales hierarchy.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>4. Live Demo Walkthrough (For the Reviewer)</h2>
+  <div class="step-card">
+    <h3><span class="step-number">1</span> Login &amp; Dashboard Overview</h3>
+    <p>Open <code>http://localhost:3000</code>. Log in with Username: <strong>Abhishek001</strong>, Password: <strong>IceStream@2026</strong>. Point out the 4 live metrics (Events, Quality Score, Quarantined, Throughput) and the React Flow lineage canvas showing a healthy green path.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">2</span> Controlled Fault Injection</h3>
+    <p>Click <strong>"Null tax burst"</strong> or <strong>"Schema drift"</strong> in the right-side Controlled Test panel. Show the reviewer how the Quality Score drops, the circuit breaker opens, and the Serving node turns red while Quarantine becomes active.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">3</span> Audit the Incident Log</h3>
+    <p>Navigate to the <strong>Incidents</strong> tab. Show the newly opened incident badge, violation details (e.g., <code>DQ-001</code>), and timestamp. Explain that rejected payloads are preserved in DLQ for forensic debugging.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">4</span> Circuit Recovery Demonstration</h3>
+    <p>Click <strong>"Manual Reset"</strong> or allow 5 consecutive clean batches to auto-recover the circuit. The lineage edges turn green again.</p>
+  </div>
+  <div class="step-card">
+    <h3><span class="step-number">5</span> Lakehouse Snapshots &amp; Time Travel</h3>
+    <p>Switch to the <strong>Snapshots</strong> tab. Click on a snapshot ID to inspect the immutable JSON watermark and record payload at that exact historical boundary.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>5. High-Scoring Viva Q&amp;A Cheat Sheet</h2>
+  <div class="qa-card">
+    <div class="qa-q">Q1: Why pre-ingestion quality gates instead of post-write batch validation?</div>
+    <div class="qa-a">Post-write validation lets corrupted records pollute analytics dashboards and downstream machine learning models before alerts trigger. IceStream acts as an in-line gate, stopping unsafe writes before commitment.</div>
+  </div>
+  <div class="qa-card">
+    <div class="qa-q">Q2: Why use a rolling window instead of a cumulative lifetime average?</div>
+    <div class="qa-a">A lifetime average dilutes recent degradation (e.g., 50 failures out of 100,000 events is only 0.05%). A rolling 100-event window detects sudden spikes instantly and clears once the stream stabilizes.</div>
+  </div>
+  <div class="qa-card">
+    <div class="qa-q">Q3: What is the difference between Quarantine (DLQ) and deleting records?</div>
+    <div class="qa-a">Deleting bad data loses forensic auditability and financial reconciliation evidence. A Dead Letter Queue preserves the exact malformed payload and rule failure metadata for replay.</div>
+  </div>
+  <div class="qa-card">
+    <div class="qa-q">Q4: How does this prototype map to production cloud infrastructure?</div>
+    <div class="qa-a">In production, the generator maps to <strong>Apache Kafka / Redpanda</strong>, the stateful processor maps to <strong>Apache Flink</strong> (with side-outputs for DLQ), and the local SQLite storage maps to <strong>Apache Iceberg tables on AWS S3 / MinIO</strong>.</div>
+  </div>
+</div>
+
+</body>
+</html>
