@@ -9,4 +9,7 @@ build/
 out/
 *.tsbuildinfo
 .catalog.db
+*.db
+*.db-shm
+*.db-wal
 warehouse/
