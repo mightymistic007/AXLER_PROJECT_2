@@ -51,4 +51,4 @@ services:
       exit 0;
       "
     networks:
-      - icestream-net
+      - icestream-netk
