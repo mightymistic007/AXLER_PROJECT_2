@@ -19,7 +19,7 @@ def test_catalog_and_table_provisioning():
     try:
         table = get_or_create_table(catalog)
         assert table is not None, "Table reference returned None"
-        print(f"  [PASS] Table '{table.identifier}' loaded/provisioned successfully.")
+        print(f"  [PASS] Table '{table.name()}' loaded/provisioned successfully.")
         print(f"  [INFO] Table Location: {table.location()}")
         print(f"  [INFO] Schema field count: {len(table.schema().fields)}")
     except Exception as e:
